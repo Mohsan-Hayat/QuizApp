@@ -83,8 +83,8 @@ let questions = [
 let currentquestion = 0;
 let rightquestions = 0;
 
-let Audiosucces= new Audio('sound/right.mp3');
-let Audiofail =  new Audio('sound/wrong.mp3');
+let Audiosucces = new Audio('sound/right.mp3');
+let Audiofail = new Audio('sound/wrong.mp3');
 
 function init() {
     document.getElementById('zahl').innerHTML = questions.length;
@@ -98,54 +98,69 @@ function init() {
 
 function showquestion() {
 
-    if (currentquestion >= questions.length) {
-
-        document.getElementById('end-body').style = '';
-        document.getElementById('question-body').style = 'display : none;';
-        document.getElementById('zahl-question').innerHTML = questions.length;
-        document.getElementById('amount-of-right-question').innerHTML = rightquestions;
-        document.getElementById('bild-end').src = 'img/pokal.png';
-        document.getElementById('progress-bar').style = 'width: 100%;';
-        document.getElementById('progress-bar').innerHTML = `100%`;
+    if (GameisOver()) {
+        ShoweEndScreen();
     } else {
-
-        let percent = currentquestion / questions.length;
-        percent = Math.round(percent * 100);
-
-        document.getElementById('progress-bar').innerHTML = `${percent}%`;
-        document.getElementById('progress-bar').style = `width: ${percent}%;`;
-
-        let question = questions[currentquestion];
-        document.getElementById('questiontext').innerHTML = question['question'];
-        document.getElementById('answer_1').innerHTML = question['answer_1'];
-        document.getElementById('answer_2').innerHTML = question['answer_2'];
-        document.getElementById('answer_3').innerHTML = question['answer_3'];
-        document.getElementById('answer_4').innerHTML = question['answer_4'];
-
-        document.getElementById('number-of-question').innerHTML = currentquestion + 1;
-
-
+        ProgressBar();
+        NextQuesstion();
     }
 }
+
+
+
+function GameisOver() {
+    return currentquestion >= questions.length;
+}
+
+
+function ShoweEndScreen() {
+    document.getElementById('end-body').style = '';
+    document.getElementById('question-body').style = 'display : none;';
+    document.getElementById('zahl-question').innerHTML = questions.length;
+    document.getElementById('amount-of-right-question').innerHTML = rightquestions;
+    document.getElementById('bild-end').src = 'img/pokal.png';
+    document.getElementById('progress-bar').style = 'width: 100%;';
+    document.getElementById('progress-bar').innerHTML = `100%`;
+}
+
+
+function ProgressBar() {
+    let percent = currentquestion / questions.length;
+    percent = Math.round(percent * 100);
+
+    document.getElementById('progress-bar').innerHTML = `${percent}%`;
+    document.getElementById('progress-bar').style = `width: ${percent}%;`;
+}
+
+
+function NextQuesstion() {
+
+
+    let question = questions[currentquestion];
+    document.getElementById('questiontext').innerHTML = question['question'];
+    document.getElementById('answer_1').innerHTML = question['answer_1'];
+    document.getElementById('answer_2').innerHTML = question['answer_2'];
+    document.getElementById('answer_3').innerHTML = question['answer_3'];
+    document.getElementById('answer_4').innerHTML = question['answer_4'];
+
+    document.getElementById('number-of-question').innerHTML = currentquestion + 1;
+}
+
 
 
 
 
 function answer(selection) {
     let question = questions[currentquestion];
-    console.log('selected answer is', selection)
     let selectedquestionnumber = selection.slice(-1);
-    console.log('selectedquestionnumber is', selectedquestionnumber)
-    console.log('current question is', question['right_answer']);
 
 
     let idwithrightanswer = `answer_${question['right_answer']}`;
 
-    if (selectedquestionnumber == question['right_answer']) {
+    if (RightAnswer(selectedquestionnumber)) {
         document.getElementById(selection).classList.add('btn-success');
-        console.log('Richtige Antwort');
-        rightquestions++;
 
+        rightquestions++;
         Audiosucces.play();
 
 
@@ -160,12 +175,16 @@ function answer(selection) {
 
 }
 
+RightAnswer(selectedquestionnumber)
+return selectedquestionnumber == question['right_answer'];
+
 
 function nextquestion() {
     currentquestion++;
     showquestion();
 
     document.getElementById('next-button').disabled = true;
+
     resetanswer();
 
 
@@ -198,3 +217,5 @@ function restart() {
 
 
 }
+
+
